@@ -1,5 +1,6 @@
-import axios, { AxiosInstance } from 'axios';
-import { ApiResponse, PriceStatistics, BlizzardItem } from '../types';
+import axios from 'axios';
+import type { AxiosInstance } from 'axios';
+import type { ApiResponse, PriceStatistics, BlizzardItem } from '../types';
 
 class ApiClient {
   private client: AxiosInstance;

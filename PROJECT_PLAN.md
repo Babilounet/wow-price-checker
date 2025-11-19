@@ -1,7 +1,7 @@
 # WoW Price Checker - Plan de développement
 
 **Dernière mise à jour**: 2025-11-19
-**Statut actuel**: Phase 1 - Setup initial
+**Statut actuel**: Phase 7 - Frontend React
 
 ---
 
@@ -26,69 +26,69 @@ Alternative à TSM (TradeSkillMaster) avec :
 
 ## 📋 Plan de développement (checklist)
 
-### Phase 1: Setup & Infrastructure ⏳ EN COURS
-- [ ] 1.1 - Créer structure de dossiers (backend, frontend, addon)
-- [ ] 1.2 - Setup backend Node.js/TypeScript + configuration
-- [ ] 1.3 - Setup frontend React/Vite + configuration
-- [ ] 1.4 - Créer addon WoW de base (.toc + structure)
-- [ ] 1.5 - Configuration Docker (PostgreSQL + Redis)
-- [ ] 1.6 - Variables d'environnement (.env.example)
+### Phase 1: Setup & Infrastructure ✅ TERMINÉ
+- [x] 1.1 - Créer structure de dossiers (backend, frontend, addon)
+- [x] 1.2 - Setup backend Node.js/TypeScript + configuration
+- [x] 1.3 - Setup frontend React/Vite + configuration
+- [x] 1.4 - Créer addon WoW de base (.toc + structure)
+- [x] 1.5 - Configuration Docker (PostgreSQL + Redis)
+- [x] 1.6 - Variables d'environnement (.env.example)
 
 **Livrable**: Projet structuré, dépendances installées, configs OK
 
 ---
 
-### Phase 2: Authentification Blizzard
-- [ ] 2.1 - Créer application sur https://develop.battle.net/
-- [ ] 2.2 - Implémenter OAuth 2.0 (client credentials flow)
-- [ ] 2.3 - Système de refresh token automatique
-- [ ] 2.4 - Middleware Express pour auth
-- [ ] 2.5 - Tests d'authentification (Postman/curl)
+### Phase 2: Authentification Blizzard ✅ TERMINÉ
+- [x] 2.1 - Créer application sur https://develop.battle.net/
+- [x] 2.2 - Implémenter OAuth 2.0 (client credentials flow)
+- [x] 2.3 - Système de refresh token automatique
+- [x] 2.4 - Middleware Express pour auth
+- [x] 2.5 - Tests d'authentification (Postman/curl)
 
 **Livrable**: Backend authentifié, peut appeler l'API Blizzard
 
 ---
 
-### Phase 3: Récupération données Auction House
-- [ ] 3.1 - Service API Blizzard (typescript client)
-- [ ] 3.2 - Endpoint `/auctions/:realmId` (fetch data)
-- [ ] 3.3 - Cache Redis (5-10min TTL)
-- [ ] 3.4 - Rate limiting (36k req/h, 100 req/s)
-- [ ] 3.5 - Job scheduler (fetch automatique toutes les heures)
-- [ ] 3.6 - Stockage historique PostgreSQL
+### Phase 3: Récupération données Auction House ✅ TERMINÉ
+- [x] 3.1 - Service API Blizzard (typescript client)
+- [x] 3.2 - Endpoint `/auctions/:realmId` (fetch data)
+- [x] 3.3 - Cache Redis (5-10min TTL)
+- [x] 3.4 - Rate limiting (36k req/h, 100 req/s)
+- [x] 3.5 - Job scheduler (fetch automatique toutes les heures)
+- [x] 3.6 - Stockage historique PostgreSQL
 
 **Livrable**: Backend récupère et stocke les données AH
 
 ---
 
-### Phase 4: Algorithme de filtrage des prix
-- [ ] 4.1 - Implémentation IQR (Interquartile Range)
-- [ ] 4.2 - Détection outliers (Q1 - 1.5*IQR, Q3 + 1.5*IQR)
-- [ ] 4.3 - Calculs statistiques (médiane, moyenne, min/max filtrés)
-- [ ] 4.4 - Endpoint `/prices/:itemId` (prix analysés)
-- [ ] 4.5 - Tests unitaires algorithme
-- [ ] 4.6 - Graphiques de distribution (optionnel)
+### Phase 4: Algorithme de filtrage des prix ✅ TERMINÉ
+- [x] 4.1 - Implémentation IQR (Interquartile Range)
+- [x] 4.2 - Détection outliers (Q1 - 1.5*IQR, Q3 + 1.5*IQR)
+- [x] 4.3 - Calculs statistiques (médiane, moyenne, min/max filtrés)
+- [x] 4.4 - Endpoint `/prices/:itemId` (prix analysés)
+- [x] 4.5 - Tests unitaires algorithme
+- [x] 4.6 - Graphiques de distribution (optionnel)
 
 **Livrable**: API retourne prix filtrés et stats
 
 ---
 
-### Phase 5: Addon WoW - Scanner d'inventaire
-- [ ] 5.1 - Scanner bags (GetContainerNumSlots, GetContainerItemInfo)
-- [ ] 5.2 - Scanner bank (GetNumBankSlots)
-- [ ] 5.3 - Extraction item IDs + quantités
-- [ ] 5.4 - Structure de données Lua (table)
-- [ ] 5.5 - Slash commands (/wpc scan, /wpc show)
-- [ ] 5.6 - Debug UI (frame pour affichage)
+### Phase 5: Addon WoW - Scanner d'inventaire ✅ TERMINÉ
+- [x] 5.1 - Scanner bags (GetContainerNumSlots, GetContainerItemInfo)
+- [x] 5.2 - Scanner bank (GetNumBankSlots)
+- [x] 5.3 - Extraction item IDs + quantités
+- [x] 5.4 - Structure de données Lua (table)
+- [x] 5.5 - Slash commands (/wpc scan, /wpc show)
+- [x] 5.6 - Debug UI (frame pour affichage)
 
 **Livrable**: Addon scan l'inventaire du joueur
 
 ---
 
-### Phase 6: Communication Pixel Manipulation 🚀 COMPLEXE
-- [ ] 6.1 - Recherche méthode encodage (RGB → binary data)
-- [ ] 6.2 - Addon: Encoder données → pixels (1x1 frame)
-- [ ] 6.3 - Addon: Afficher frame invisible (off-screen)
+### Phase 6: Communication Pixel Manipulation 🚀 COMPLEXE (POC)
+- [x] 6.1 - Recherche méthode encodage (RGB → binary data)
+- [x] 6.2 - Addon: Encoder données → pixels (1x1 frame)
+- [x] 6.3 - Addon: Afficher frame invisible (off-screen)
 - [ ] 6.4 - Desktop app: Screen capture (node-screenshots)
 - [ ] 6.5 - Desktop app: Décodage pixels → JSON
 - [ ] 6.6 - Tests communication bout-en-bout
@@ -98,14 +98,14 @@ Alternative à TSM (TradeSkillMaster) avec :
 
 ---
 
-### Phase 7: Frontend React
-- [ ] 7.1 - Design UI/UX (wireframes)
-- [ ] 7.2 - Page inventaire (liste items + prix)
-- [ ] 7.3 - Graphiques prix (recharts/visx)
-- [ ] 7.4 - Filtres/recherche items
-- [ ] 7.5 - Settings (realm, character)
+### Phase 7: Frontend React ⏳ EN COURS
+- [x] 7.1 - Design UI/UX (wireframes)
+- [x] 7.2 - Page inventaire (liste items + prix)
+- [x] 7.3 - Graphiques prix (recharts/visx)
+- [x] 7.4 - Filtres/recherche items
+- [x] 7.5 - Settings (realm, character)
 - [ ] 7.6 - WebSocket pour updates temps réel
-- [ ] 7.7 - Responsive design
+- [x] 7.7 - Responsive design
 
 **Livrable**: Interface web fonctionnelle
 
@@ -203,4 +203,4 @@ cd frontend && npm run dev
 
 ---
 
-**Prochaine étape**: Phase 1.1 - Créer structure de dossiers
+**Prochaine étape**: Phase 7.6 - WebSocket pour updates temps réel (optionnel)
