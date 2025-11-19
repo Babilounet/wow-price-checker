@@ -238,22 +238,59 @@ make stop
 
 ## Deployment
 
-See [HOSTING.md](HOSTING.md) for deployment options:
+### 🐳 Self-Hosted Production (Recommended)
+
+Deploy on your own server with Docker in 3 commands:
+
+```bash
+# 1. Configure
+cp .env.prod.example .env
+nano .env  # Add Blizzard API credentials
+
+# 2. Deploy
+make deploy
+
+# 3. Access
+# Application: http://your-server
+# API: http://your-server/api/v1
+```
+
+**Complete guide**: See [DEPLOYMENT.md](DEPLOYMENT.md)
+
+**Features**:
+- ✅ Fully Dockerized (portable deployment)
+- ✅ Nginx reverse proxy with rate limiting
+- ✅ SSL/TLS with Let's Encrypt (auto-renewal)
+- ✅ Automated backups (PostgreSQL)
+- ✅ Health checks and monitoring
+- ✅ Production-optimized (non-root containers, security headers)
+
+**Requirements**:
+- Ubuntu/Debian server (2 CPU, 4GB RAM)
+- Docker + Docker Compose
+- Domain name (optional, for SSL)
+
+### ☁️ Other Hosting Options
+
+See [HOSTING.md](HOSTING.md) for alternatives:
 
 - VPS (Hetzner, DigitalOcean) - ~10€/month
 - Cloud (Railway, Render) - ~25€/month
-- Self-hosted (Raspberry Pi) - Free
+- Raspberry Pi - Free
 
 ## Roadmap
 
 See [PROJECT_PLAN.md](PROJECT_PLAN.md) for detailed development plan.
 
-### Phase 1 - MVP (Current)
+### Phase 1 - MVP ✅ COMPLETED
 - [x] Backend API with Blizzard auth
 - [x] Price analysis with IQR
 - [x] Frontend React app
 - [x] WoW addon with pixel encoding
 - [x] Docker development environment
+- [x] Production deployment setup (Docker + Nginx)
+- [x] SSL/TLS support (Let's Encrypt)
+- [x] Automated backups & restore
 
 ### Phase 2 - Enhancement
 - [ ] Desktop Electron app
@@ -286,11 +323,12 @@ Contributions welcome! Please:
 
 ## Documentation
 
-- [PROJECT_PLAN.md](PROJECT_PLAN.md) - Development roadmap
-- [HOSTING.md](HOSTING.md) - Deployment guide
-- [backend/README.md](backend/README.md) - Backend docs
-- [frontend/README.md](frontend/README.md) - Frontend docs
-- [addon/README.md](addon/README.md) - Addon docs
+- **[DEPLOYMENT.md](DEPLOYMENT.md)** - Self-hosted production deployment guide
+- **[PROJECT_PLAN.md](PROJECT_PLAN.md)** - Development roadmap (9 phases)
+- [HOSTING.md](HOSTING.md) - Hosting options comparison
+- [backend/README.md](backend/README.md) - Backend API documentation
+- [frontend/README.md](frontend/README.md) - Frontend application
+- [addon/README.md](addon/README.md) - WoW addon guide
 
 ## License
 
