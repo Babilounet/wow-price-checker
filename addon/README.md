@@ -2,6 +2,11 @@
 
 WoW addon for real-time inventory tracking with pixel manipulation communication.
 
+**Compatible with:**
+- ✅ Classic Anniversary (1.15.6) - Interface 11506
+- ✅ Classic Era
+- ✅ Retail (with minor TOC update)
+
 ## Features
 
 - Automatic inventory scanning (bags + bank)
@@ -11,14 +16,32 @@ WoW addon for real-time inventory tracking with pixel manipulation communication
 
 ## Installation
 
+### Classic Anniversary / Classic Era
+
 1. Copy the `addon` folder to your WoW addons directory:
    ```
-   World of Warcraft/_retail_/Interface/AddOns/WowPriceChecker/
+   World of Warcraft/_classic_/Interface/AddOns/WowPriceChecker/
    ```
 
 2. Restart WoW or type `/reload` in-game
 
 3. The addon will load automatically
+
+### Retail (if needed)
+
+Edit `WowPriceChecker.toc` and change:
+```
+## Interface: 11506
+```
+to:
+```
+## Interface: 110002
+```
+
+Then copy to:
+```
+World of Warcraft/_retail_/Interface/AddOns/WowPriceChecker/
+```
 
 ## Usage
 
@@ -125,13 +148,15 @@ WowPriceCheckerDB = {
 
 ## Technical Notes
 
-### API Used
+### API Used (Classic Anniversary)
 
-- `C_Container.GetContainerNumSlots()` - Get bag size
-- `C_Container.GetContainerItemInfo()` - Get item info
-- `C_Item.GetItemNameByID()` - Get item name
+- `GetContainerNumSlots()` - Get bag size
+- `GetContainerItemInfo()` - Get item info
+- `GetItemInfo()` - Get item name
 - `CreateFrame()` - Create UI frame
-- `C_Timer.NewTimer()` - Schedule updates
+- `C_Timer.NewTimer()` - Schedule updates (works in Classic Anniversary)
+
+**Note**: Uses Classic-era API functions, not the modern `C_Container` namespace.
 
 ### Pixel Encoding Theory
 

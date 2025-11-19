@@ -1,4 +1,4 @@
-## Interface: 110002
+## Interface: 11506
 ## Title: WoW Price Checker
 ## Notes: Real-time inventory tracking and price checking. Works with WoW Price Checker desktop app.
 ## Author: babilounet

@@ -16,8 +16,7 @@
     "react-router-dom": "^6.21.1",
     "axios": "^1.6.2",
     "recharts": "^2.10.3",
-    "zustand": "^4.4.7",
-    "lucide-react": "^0.303.0"
+    "zustand": "^4.4.7"
   },
   "devDependencies": {
     "@eslint/js": "^9.39.1",

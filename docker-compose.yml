@@ -26,7 +26,7 @@ services:
     image: redis:7-alpine
     container_name: wpc-redis
     restart: unless-stopped
-    command: redis-server --requirepass ${REDIS_PASSWORD:-}
+    command: redis-server
     ports:
       - "${REDIS_PORT:-6379}:6379"
     volumes:

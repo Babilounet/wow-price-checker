@@ -2,25 +2,24 @@
 WowPriceChecker.ItemScanner = {}
 local Scanner = WowPriceChecker.ItemScanner
 
----Scan all player bags
+---Scan all player bags (Classic Anniversary compatible)
 function Scanner:ScanAll()
     local WPC = WowPriceChecker
     local inventory = {}
 
     -- Scan main bags (0-4)
+    -- Bag 0 = backpack, 1-4 = bag slots
     for bag = 0, 4 do
-        local numSlots = C_Container.GetContainerNumSlots(bag)
+        local numSlots = GetContainerNumSlots(bag)
         if numSlots and numSlots > 0 then
             for slot = 1, numSlots do
-                local itemInfo = C_Container.GetContainerItemInfo(bag, slot)
-                if itemInfo then
-                    local itemID = itemInfo.itemID
-                    local stackCount = itemInfo.stackCount or 1
-
+                local _, stackCount, _, _, _, _, itemLink = GetContainerItemInfo(bag, slot)
+                if itemLink then
+                    local itemID = self:GetItemIDFromLink(itemLink)
                     if itemID then
-                        inventory[itemID] = (inventory[itemID] or 0) + stackCount
+                        inventory[itemID] = (inventory[itemID] or 0) + (stackCount or 1)
                         WPC:DebugPrint(string.format("Found item %d x%d in bag %d slot %d",
-                            itemID, stackCount, bag, slot))
+                            itemID, stackCount or 1, bag, slot))
                     end
                 end
             end
@@ -48,48 +47,53 @@ function Scanner:ScanAll()
     return inventory
 end
 
----Scan bank slots
+---Scan bank slots (Classic Anniversary compatible)
 ---@param inventory table
 function Scanner:ScanBank(inventory)
     local WPC = WowPriceChecker
 
-    -- Bank bags are numbered from BANK_CONTAINER (-1) and NUM_BANKBAGSLOTS (7)
-    local BANK_CONTAINER = Enum.BagIndex.Bank
-    local numBankSlots = C_Container.GetContainerNumSlots(BANK_CONTAINER)
+    -- Bank bag is bag -1 (BANK_CONTAINER)
+    local numBankSlots = GetContainerNumSlots(BANK_CONTAINER)
 
     if numBankSlots and numBankSlots > 0 then
         for slot = 1, numBankSlots do
-            local itemInfo = C_Container.GetContainerItemInfo(BANK_CONTAINER, slot)
-            if itemInfo then
-                local itemID = itemInfo.itemID
-                local stackCount = itemInfo.stackCount or 1
-
+            local _, stackCount, _, _, _, _, itemLink = GetContainerItemInfo(BANK_CONTAINER, slot)
+            if itemLink then
+                local itemID = self:GetItemIDFromLink(itemLink)
                 if itemID then
-                    inventory[itemID] = (inventory[itemID] or 0) + stackCount
+                    inventory[itemID] = (inventory[itemID] or 0) + (stackCount or 1)
                     WPC:DebugPrint(string.format("Found item %d x%d in bank slot %d",
-                        itemID, stackCount, slot))
+                        itemID, stackCount or 1, slot))
                 end
             end
         end
     end
 
-    -- Scan bank bags (5-11)
-    for bag = 5, 11 do
-        local numSlots = C_Container.GetContainerNumSlots(bag)
+    -- Scan bank bags (5-10 for Classic, bags 5-11 for Retail)
+    -- Classic Anniversary has 6 bank bag slots
+    for bag = 5, 10 do
+        local numSlots = GetContainerNumSlots(bag)
         if numSlots and numSlots > 0 then
             for slot = 1, numSlots do
-                local itemInfo = C_Container.GetContainerItemInfo(bag, slot)
-                if itemInfo then
-                    local itemID = itemInfo.itemID
-                    local stackCount = itemInfo.stackCount or 1
-
+                local _, stackCount, _, _, _, _, itemLink = GetContainerItemInfo(bag, slot)
+                if itemLink then
+                    local itemID = self:GetItemIDFromLink(itemLink)
                     if itemID then
-                        inventory[itemID] = (inventory[itemID] or 0) + stackCount
+                        inventory[itemID] = (inventory[itemID] or 0) + (stackCount or 1)
                     end
                 end
             end
         end
     end
+end
+
+---Extract item ID from item link
+---@param itemLink string
+---@return number|nil
+function Scanner:GetItemIDFromLink(itemLink)
+    if not itemLink then return nil end
+    local itemID = tonumber(itemLink:match("item:(%d+)"))
+    return itemID
 end
 
 ---Check if bank is open
@@ -109,10 +113,10 @@ function Scanner:CountItems(inventory)
     return count
 end
 
----Get item name by ID
+---Get item name by ID (Classic compatible)
 ---@param itemID number
 ---@return string|nil
 function Scanner:GetItemName(itemID)
-    local itemName = C_Item.GetItemNameByID(itemID)
+    local itemName = GetItemInfo(itemID)
     return itemName
 end
