@@ -81,8 +81,8 @@ class BlizzardApiService {
 
       const response = await this.apiClient.get<BlizzardItem>(`/data/wow/item/${itemId}`, {
         params: {
-          namespace: `static-${config.BLIZZARD_REGION}`,
-          locale: 'en_US',
+          namespace: `static-classic-${config.BLIZZARD_REGION}`,
+          locale: 'fr_FR',
         },
       });
 
@@ -102,8 +102,8 @@ class BlizzardApiService {
         `/data/wow/media/item/${itemId}`,
         {
           params: {
-            namespace: `static-${config.BLIZZARD_REGION}`,
-            locale: 'en_US',
+            namespace: `static-${config.BLIZZARD_REGION}`, // Use static-eu for Classic Anniversary
+            locale: 'fr_FR',
           },
         }
       );

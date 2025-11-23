@@ -143,6 +143,7 @@ export interface ItemCache {
   item_class: string;
   item_subclass: string;
   icon_url?: string;
+  description?: string;
   last_updated: Date;
 }
 

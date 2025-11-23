@@ -58,12 +58,16 @@ services:
       BLIZZARD_CLIENT_ID: ${BLIZZARD_CLIENT_ID}
       BLIZZARD_CLIENT_SECRET: ${BLIZZARD_CLIENT_SECRET}
       BLIZZARD_REGION: ${BLIZZARD_REGION:-eu}
+      SAVEDVARS_WATCHER_ENABLED: ${SAVEDVARS_WATCHER_ENABLED:-false}
+      WOW_PATH: ${WOW_PATH:-}
+      WOW_ACCOUNT_NAME: ${WOW_ACCOUNT_NAME:-}
     ports:
       - "3000:3000"
       - "3001:3001"  # WebSocket
     volumes:
       - ./backend:/app
       - /app/node_modules
+      - F:\World of Warcraft\_classic_era_:/wow:ro
     depends_on:
       postgres:
         condition: service_healthy

@@ -34,6 +34,9 @@ export default function Layout({ children }: LayoutProps) {
               <NavLink to="/search" active={isActive('/search')}>
                 Search
               </NavLink>
+              <NavLink to="/inventory" active={isActive('/inventory')}>
+                Inventaire
+              </NavLink>
               <NavLink to="/settings" active={isActive('/settings')}>
                 Settings
               </NavLink>

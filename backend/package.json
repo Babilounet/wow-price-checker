@@ -7,6 +7,8 @@
     "dev": "tsx watch src/index.ts",
     "build": "tsc",
     "start": "node dist/index.js",
+    "populate-items": "tsx src/scripts/populateItemCache.ts",
+    "populate-icons": "tsx src/scripts/populateIcons.ts",
     "test": "jest",
     "test:watch": "jest --watch",
     "lint": "eslint src --ext .ts",
@@ -35,7 +37,8 @@
     "zod": "^3.22.4",
     "helmet": "^7.1.0",
     "express-rate-limit": "^7.1.5",
-    "compression": "^1.7.4"
+    "compression": "^1.7.4",
+    "chokidar": "^3.5.3"
   },
   "devDependencies": {
     "@types/node": "^20.10.6",

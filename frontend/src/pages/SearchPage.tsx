@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { formatPrice } from '../utils/formatPrice';
+import ItemSearchAutocomplete from '../components/ItemSearchAutocomplete';
 
 // Popular Classic Anniversary items for quick access
 const POPULAR_ITEMS = [
@@ -25,107 +25,87 @@ export default function SearchPage() {
     }
   };
 
+  const handleAutocompleteSelect = (selectedItemId: number) => {
+    navigate(`/item/${selectedItemId}`);
+  };
+
   const handleQuickSearch = (id: number) => {
     navigate(`/item/${id}`);
   };
 
   return (
-    <div className="max-w-4xl mx-auto space-y-8">
-      {/* Search Header */}
+    <div className="max-w-2xl mx-auto space-y-8">
       <div className="text-center">
-        <h1 className="text-4xl font-bold mb-3">Search Items</h1>
+        <h1 className="text-4xl font-bold mb-4">Rechercher un Item</h1>
         <p className="text-gray-400">
-          Enter an item ID to view current auction house prices
+          Recherchez par nom ou entrez directement l'ID d'un item
         </p>
       </div>
 
-      {/* Search Form */}
+      {/* Recherche par nom */}
       <div className="card">
-        <form onSubmit={handleSearch} className="space-y-4">
-          <div>
-            <label htmlFor="itemId" className="block text-sm font-medium mb-2">
-              Item ID
-            </label>
-            <div className="flex space-x-3">
-              <input
-                type="text"
-                id="itemId"
-                value={itemId}
-                onChange={(e) => setItemId(e.target.value)}
-                placeholder="e.g., 2589 (Linen Cloth)"
-                className="input flex-1 text-lg"
-                autoFocus
-              />
-              <button type="submit" className="btn-primary px-8">
-                Search
-              </button>
-            </div>
-            <p className="text-sm text-gray-500 mt-2">
-              Tip: Find item IDs on{' '}
-              <a
-                href="https://classic.wowhead.com/"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-blue-400 hover:underline"
-              >
-                Wowhead Classic
-              </a>
-            </p>
-          </div>
+        <h2 className="text-xl font-semibold mb-3">Recherche par nom</h2>
+        <ItemSearchAutocomplete
+          onSelect={handleAutocompleteSelect}
+          placeholder="Ex: Thunderfury, Flask, Essence..."
+        />
+      </div>
+
+      {/* Recherche par ID */}
+      <div className="card">
+        <h2 className="text-xl font-semibold mb-3">Recherche par ID</h2>
+        <form onSubmit={handleSearch} className="flex gap-3">
+          <input
+            type="number"
+            value={itemId}
+            onChange={(e) => setItemId(e.target.value)}
+            placeholder="Ex: 19019"
+            className="input-field flex-1"
+          />
+          <button type="submit" className="btn-primary">
+            Rechercher
+          </button>
         </form>
+        <p className="text-sm text-gray-500 mt-2">
+          Trouvez l'ID sur{' '}
+          <a
+            href="https://www.wowhead.com/classic"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-blue-400 hover:underline"
+          >
+            Wowhead Classic
+          </a>
+        </p>
       </div>
 
       {/* Popular Items */}
-      <div>
-        <h2 className="text-2xl font-bold mb-4">Popular Items</h2>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+      <div className="card">
+        <h2 className="text-xl font-semibold mb-4">Items populaires</h2>
+        <div className="grid md:grid-cols-2 gap-3">
           {POPULAR_ITEMS.map((item) => (
             <button
               key={item.id}
               onClick={() => handleQuickSearch(item.id)}
-              className="card hover:border-blue-600 transition-colors text-left p-4"
+              className="p-3 bg-gray-800/50 hover:bg-gray-700/50 rounded transition-colors text-left flex justify-between items-center"
             >
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="font-semibold text-white">{item.name}</p>
-                  <p className="text-sm text-gray-400">ID: {item.id}</p>
+              <div>
+                <div className="font-semibold">
+                  <a
+                    href={`https://fr.wowhead.com/classic/item=${item.id}`}
+                    data-wowhead={`item=${item.id}&domain=fr`}
+                    onClick={(e) => e.stopPropagation()}
+                    className="text-white hover:text-blue-300"
+                  >
+                    {item.name}
+                  </a>
                 </div>
-                <span className="text-blue-400">→</span>
+                <div className="text-sm text-gray-400">ID: {item.id}</div>
               </div>
+              <span className="text-blue-400">→</span>
             </button>
           ))}
         </div>
-      </div>
-
-      {/* How to Find Item ID */}
-      <div className="card bg-gray-800/50">
-        <h3 className="font-semibold mb-3">How to Find an Item ID</h3>
-        <ol className="space-y-2 text-gray-300 text-sm">
-          <li>
-            <strong className="text-white">1.</strong> Go to{' '}
-            <a
-              href="https://classic.wowhead.com/"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-blue-400 hover:underline"
-            >
-              Wowhead Classic
-            </a>
-          </li>
-          <li>
-            <strong className="text-white">2.</strong> Search for your item
-          </li>
-          <li>
-            <strong className="text-white">3.</strong> Look at the URL:{' '}
-            <code className="bg-gray-900 px-2 py-1 rounded">
-              classic.wowhead.com/item=<span className="text-green-400">2589</span>
-            </code>
-          </li>
-          <li>
-            <strong className="text-white">4.</strong> The number after <code>item=</code> is the
-            item ID
-          </li>
-        </ol>
       </div>
     </div>
   );

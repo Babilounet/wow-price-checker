@@ -1,6 +1,57 @@
 import { Link } from 'react-router-dom';
+import { useState, useEffect } from 'react';
+
+interface IngestionStatus {
+  itemsTracked: number;
+  totalAuctions: number;
+  realms: Array<{ name: string; region: string }>;
+  lastUpdate: string;
+}
 
 export default function HomePage() {
+  const [status, setStatus] = useState<IngestionStatus | null>(null);
+  const [isRefreshing, setIsRefreshing] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
+
+  const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000/api/v1';
+
+  const fetchStatus = async () => {
+    try {
+      const response = await fetch(`${API_BASE_URL}/ingest/status`);
+      const data = await response.json();
+      if (data.success) {
+        setStatus(data.data);
+      }
+    } catch (error) {
+      console.error('Failed to fetch status:', error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const triggerRefresh = async () => {
+    setIsRefreshing(true);
+    try {
+      const response = await fetch(`${API_BASE_URL}/ingest`, {
+        method: 'POST',
+      });
+      const data = await response.json();
+      if (data.success) {
+        await fetchStatus();
+      }
+    } catch (error) {
+      console.error('Failed to trigger refresh:', error);
+    } finally {
+      setIsRefreshing(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchStatus();
+    const interval = setInterval(fetchStatus, 30000); // Poll every 30 seconds
+    return () => clearInterval(interval);
+  }, []);
+
   return (
     <div className="space-y-8">
       {/* Hero Section */}
@@ -15,6 +66,44 @@ export default function HomePage() {
           Start Searching Items
         </Link>
       </div>
+
+      {/* Database Status */}
+      {!isLoading && status && (
+        <div className="card bg-gradient-to-br from-blue-900/30 to-purple-900/30 border-blue-600/30">
+          <div className="flex justify-between items-center mb-4">
+            <h2 className="text-2xl font-bold">Database Status</h2>
+            <button
+              onClick={triggerRefresh}
+              disabled={isRefreshing}
+              className="btn-primary disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              {isRefreshing ? '🔄 Refreshing...' : '🔄 Refresh Data'}
+            </button>
+          </div>
+          <div className="grid md:grid-cols-4 gap-4">
+            <div className="bg-gray-800/50 rounded-lg p-4">
+              <div className="text-gray-400 text-sm mb-1">Items Tracked</div>
+              <div className="text-3xl font-bold text-green-400">{status.itemsTracked.toLocaleString()}</div>
+            </div>
+            <div className="bg-gray-800/50 rounded-lg p-4">
+              <div className="text-gray-400 text-sm mb-1">Total Auctions</div>
+              <div className="text-3xl font-bold text-blue-400">{status.totalAuctions.toLocaleString()}</div>
+            </div>
+            <div className="bg-gray-800/50 rounded-lg p-4">
+              <div className="text-gray-400 text-sm mb-1">Realm</div>
+              <div className="text-xl font-bold text-purple-400">
+                {status.realms[0]?.name || 'N/A'} ({status.realms[0]?.region.toUpperCase()})
+              </div>
+            </div>
+            <div className="bg-gray-800/50 rounded-lg p-4">
+              <div className="text-gray-400 text-sm mb-1">Last Update</div>
+              <div className="text-sm font-mono text-yellow-400">
+                {status.lastUpdate ? new Date(status.lastUpdate).toLocaleString() : 'Never'}
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Features Grid */}
       <div className="grid md:grid-cols-3 gap-6">

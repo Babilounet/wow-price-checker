@@ -86,6 +86,54 @@ class ApiClient {
       return false;
     }
   }
+
+  /**
+   * Search items by name
+   */
+  async searchItems(query: string, limit: number = 10): Promise<any> {
+    const response = await this.client.get(`/items/search`, {
+      params: { q: query, limit }
+    });
+    return response.data.data;
+  }
+
+  /**
+   * Get item with pricing information from database
+   */
+  async getItemWithPricing(itemId: number, realm?: string): Promise<any> {
+    const response = await this.client.get(`/prices/${itemId}`, {
+      params: { realm }
+    });
+    return response.data.data;
+  }
+
+  /**
+   * Get item price history
+   */
+  async getItemHistory(itemId: number, days: number = 30, realm?: string): Promise<any> {
+    const response = await this.client.get(`/prices/${itemId}/history`, {
+      params: { days, realm }
+    });
+    return response.data.data;
+  }
+
+  /**
+   * Get player inventory
+   */
+  async getInventory(characterName: string, realm?: string): Promise<any> {
+    const response = await this.client.get(`/inventory/${characterName}`, {
+      params: { realm }
+    });
+    return response.data.data;
+  }
+
+  /**
+   * Get inventory total value
+   */
+  async getInventoryValue(characterName: string): Promise<any> {
+    const response = await this.client.get(`/inventory/${characterName}/value`);
+    return response.data.data;
+  }
 }
 
 export const apiClient = new ApiClient();

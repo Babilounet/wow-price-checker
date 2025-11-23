@@ -2,6 +2,29 @@
 WowPriceChecker.ItemScanner = {}
 local Scanner = WowPriceChecker.ItemScanner
 
+-- API Compatibility Layer for Classic Anniversary
+local function GetContainerNumSlots_Compat(bag)
+    if C_Container and C_Container.GetContainerNumSlots then
+        return C_Container.GetContainerNumSlots(bag)
+    else
+        return GetContainerNumSlots(bag)
+    end
+end
+
+local function GetContainerItemInfo_Compat(bag, slot)
+    if C_Container and C_Container.GetContainerItemInfo then
+        local info = C_Container.GetContainerItemInfo(bag, slot)
+        if info then
+            return info.iconFileID, info.stackCount, info.isLocked, info.quality,
+                   info.isReadable, info.hasLoot, info.hyperlink, info.isFiltered,
+                   info.hasNoValue, info.itemID
+        end
+        return nil
+    else
+        return GetContainerItemInfo(bag, slot)
+    end
+end
+
 ---Scan all player bags (Classic Anniversary compatible)
 function Scanner:ScanAll()
     local WPC = WowPriceChecker
@@ -10,10 +33,10 @@ function Scanner:ScanAll()
     -- Scan main bags (0-4)
     -- Bag 0 = backpack, 1-4 = bag slots
     for bag = 0, 4 do
-        local numSlots = GetContainerNumSlots(bag)
+        local numSlots = GetContainerNumSlots_Compat(bag)
         if numSlots and numSlots > 0 then
             for slot = 1, numSlots do
-                local _, stackCount, _, _, _, _, itemLink = GetContainerItemInfo(bag, slot)
+                local _, stackCount, _, _, _, _, itemLink = GetContainerItemInfo_Compat(bag, slot)
                 if itemLink then
                     local itemID = self:GetItemIDFromLink(itemLink)
                     if itemID then
@@ -40,7 +63,7 @@ function Scanner:ScanAll()
     WPC:DebugPrint("Scanned " .. self:CountItems(inventory) .. " unique items")
 
     -- Trigger pixel encoding update
-    if WPC.Config.enabled then
+    if WPC.Config and WPC.Config.enabled then
         WPC.PixelEncoder:EncodeInventory(inventory)
     end
 
@@ -53,11 +76,12 @@ function Scanner:ScanBank(inventory)
     local WPC = WowPriceChecker
 
     -- Bank bag is bag -1 (BANK_CONTAINER)
-    local numBankSlots = GetContainerNumSlots(BANK_CONTAINER)
+    local BANK_CONTAINER = -1
+    local numBankSlots = GetContainerNumSlots_Compat(BANK_CONTAINER)
 
     if numBankSlots and numBankSlots > 0 then
         for slot = 1, numBankSlots do
-            local _, stackCount, _, _, _, _, itemLink = GetContainerItemInfo(BANK_CONTAINER, slot)
+            local _, stackCount, _, _, _, _, itemLink = GetContainerItemInfo_Compat(BANK_CONTAINER, slot)
             if itemLink then
                 local itemID = self:GetItemIDFromLink(itemLink)
                 if itemID then
@@ -72,10 +96,10 @@ function Scanner:ScanBank(inventory)
     -- Scan bank bags (5-10 for Classic, bags 5-11 for Retail)
     -- Classic Anniversary has 6 bank bag slots
     for bag = 5, 10 do
-        local numSlots = GetContainerNumSlots(bag)
+        local numSlots = GetContainerNumSlots_Compat(bag)
         if numSlots and numSlots > 0 then
             for slot = 1, numSlots do
-                local _, stackCount, _, _, _, _, itemLink = GetContainerItemInfo(bag, slot)
+                local _, stackCount, _, _, _, _, itemLink = GetContainerItemInfo_Compat(bag, slot)
                 if itemLink then
                     local itemID = self:GetItemIDFromLink(itemLink)
                     if itemID then

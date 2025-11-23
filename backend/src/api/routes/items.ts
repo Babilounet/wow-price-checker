@@ -1,10 +1,63 @@
 import { Router, Request, Response } from 'express';
 import { blizzardApiService } from '../../services/blizzardApi';
 import { cacheService, CacheKeys } from '../../services/cacheService';
+import { pool } from '../../db';
 import { logger } from '../../utils/logger';
 import { config } from '../../config';
 
 const router = Router();
+
+/**
+ * GET /api/v1/items/search?q={query}&limit=10
+ * Search items by name
+ */
+router.get('/search', async (req: Request, res: Response) => {
+  try {
+    const { q, limit = 10 } = req.query;
+
+    if (!q || typeof q !== 'string' || q.length < 2) {
+      return res.status(400).json({
+        success: false,
+        error: 'Query must be at least 2 characters'
+      });
+    }
+
+    const client = await pool.connect();
+
+    try {
+      // Recherche full-text avec PostgreSQL
+      const result = await client.query(
+        `SELECT item_id, name, quality, item_class, icon_url
+         FROM item_cache
+         WHERE name ILIKE $1
+         ORDER BY
+           CASE WHEN name ILIKE $2 THEN 0 ELSE 1 END,
+           LENGTH(name),
+           name
+         LIMIT $3`,
+        [`%${q}%`, `${q}%`, limit]
+      );
+
+      res.json({
+        success: true,
+        data: {
+          items: result.rows,
+          count: result.rows.length
+        }
+      });
+
+    } finally {
+      client.release();
+    }
+
+  } catch (error) {
+    logger.error('Failed to search items', { error, query: req.query });
+    res.status(500).json({
+      success: false,
+      error: 'Failed to search items'
+    });
+  }
+});
 
 /**
  * GET /items/:itemId

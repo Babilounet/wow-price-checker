@@ -1,13 +1,16 @@
-## Interface: 11506
+## Interface: 11508
+## Interface-Classic: 11508
 ## Title: WoW Price Checker
 ## Notes: Real-time inventory tracking and price checking. Works with WoW Price Checker desktop app.
 ## Author: babilounet
 ## Version: 1.0.0
 ## SavedVariables: WowPriceCheckerDB
 ## DefaultState: enabled
+## LoadOnDemand: 0
 
 # Core files
 Core.lua
 PixelEncoder.lua
 ItemScanner.lua
+AuctionScanner.lua
 Config.lua
