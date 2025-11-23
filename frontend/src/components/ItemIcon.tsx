@@ -32,12 +32,12 @@ export default function ItemIcon({
 }: ItemIconProps) {
   const borderColor = qualityColors[quality] || qualityColors.COMMON;
 
-  // Display icon with optional Wowhead tooltip
-  const iconElement = (
+  // Display icon - tooltips should be on text, not icons
+  return (
     <div
       className={`${sizeClasses[size]} relative rounded border-2 bg-gray-800 flex items-center justify-center overflow-hidden`}
       style={{ borderColor }}
-      title={!showTooltip ? name : undefined}
+      title={name}
     >
       {iconUrl ? (
         <img
@@ -58,19 +58,4 @@ export default function ItemIcon({
       )}
     </div>
   );
-
-  // Wrap in Wowhead link for tooltip if enabled
-  if (itemId && showTooltip) {
-    return (
-      <a
-        href={`https://fr.wowhead.com/classic/item=${itemId}`}
-        data-wowhead={`item=${itemId}&domain=fr`}
-        className="block"
-      >
-        {iconElement}
-      </a>
-    );
-  }
-
-  return iconElement;
 }

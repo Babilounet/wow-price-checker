@@ -1,5 +1,5 @@
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
-import { formatPrice } from '../utils/formatPrice';
+import PriceDisplay from './PriceDisplay';
 import { formatDateShort } from '../utils/formatDate';
 
 interface PriceHistoryData {
@@ -14,11 +14,34 @@ interface PriceHistoryChartProps {
   itemName?: string;
 }
 
+// Custom tooltip component
+function CustomTooltip({ active, payload, label }: any) {
+  if (active && payload && payload.length) {
+    return (
+      <div className="bg-gray-800 border border-gray-700 rounded p-3 shadow-lg">
+        <p className="text-gray-300 text-sm mb-2">{label}</p>
+        {payload.map((entry, index) => {
+          // Convert from gold back to copper for PriceDisplay
+          const copperValue = Math.round((entry.value as number) * 10000);
+          return (
+            <div key={index} className="flex items-center gap-2 text-sm">
+              <div className="w-3 h-3 rounded" style={{ backgroundColor: entry.color }}></div>
+              <span className="text-gray-400">{entry.name}:</span>
+              <PriceDisplay copper={copperValue} />
+            </div>
+          );
+        })}
+      </div>
+    );
+  }
+  return null;
+}
+
 export default function PriceHistoryChart({ history, itemName }: PriceHistoryChartProps) {
   const chartData = history.map(h => ({
-    date: formatDateShort(h.scan_timestamp),
-    normalPrice: h.normal_price / 10000, // Convert to gold
-    dealPrice: h.deal_price ? h.deal_price / 10000 : null,
+    date: formatDateShort(h.scan_timestamp) || 'N/A',
+    normalGold: h.normal_price / 10000, // For display in gold
+    dealGold: h.deal_price ? h.deal_price / 10000 : null,
     sampleSize: h.sample_size
   })).reverse(); // Chronological order
 
@@ -33,14 +56,11 @@ export default function PriceHistoryChart({ history, itemName }: PriceHistoryCha
           <CartesianGrid strokeDasharray="3 3" stroke="#374151" />
           <XAxis dataKey="date" stroke="#9ca3af" />
           <YAxis stroke="#9ca3af" label={{ value: 'Prix (or)', angle: -90, position: 'insideLeft' }} />
-          <Tooltip
-            contentStyle={{ backgroundColor: '#1f2937', border: '1px solid #374151' }}
-            formatter={(value: number) => `${value.toFixed(2)}g`}
-          />
+          <Tooltip content={<CustomTooltip />} />
           <Legend />
           <Line
             type="monotone"
-            dataKey="normalPrice"
+            dataKey="normalGold"
             stroke="#10b981"
             strokeWidth={2}
             name="Prix Normal"
@@ -48,7 +68,7 @@ export default function PriceHistoryChart({ history, itemName }: PriceHistoryCha
           />
           <Line
             type="monotone"
-            dataKey="dealPrice"
+            dataKey="dealGold"
             stroke="#3b82f6"
             strokeWidth={2}
             name="Deal"
@@ -59,7 +79,7 @@ export default function PriceHistoryChart({ history, itemName }: PriceHistoryCha
       </ResponsiveContainer>
 
       <div className="mt-4 text-sm text-gray-400">
-        {history.length} scans enregistrés
+        {history.length} scan{history.length > 1 ? 's' : ''} enregistré{history.length > 1 ? 's' : ''}
       </div>
     </div>
   );

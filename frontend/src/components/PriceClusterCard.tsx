@@ -1,4 +1,4 @@
-import { formatPrice } from '../utils/formatPrice';
+import PriceDisplay from './PriceDisplay';
 
 interface PriceClusterCardProps {
   type: 'normal' | 'deal' | 'aberrant';
@@ -47,7 +47,9 @@ export default function PriceClusterCard({
 
       <div className="flex items-baseline gap-2 mb-2">
         <span className="text-2xl">{style.icon}</span>
-        <span className="text-3xl font-bold">{formatPrice(price)}</span>
+        <span className="text-3xl font-bold">
+          <PriceDisplay copper={price} />
+        </span>
       </div>
 
       <div className="text-sm text-gray-400">

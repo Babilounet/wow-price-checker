@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import ItemSearchAutocomplete from '../components/ItemSearchAutocomplete';
 
@@ -17,6 +17,16 @@ const POPULAR_ITEMS = [
 export default function SearchPage() {
   const [itemId, setItemId] = useState('');
   const navigate = useNavigate();
+
+  // Refresh Wowhead tooltips on mount
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      if (window.$WowheadPower) {
+        window.$WowheadPower.refreshLinks();
+      }
+    }, 100);
+    return () => clearTimeout(timer);
+  }, []);
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
@@ -93,7 +103,7 @@ export default function SearchPage() {
                 <div className="font-semibold">
                   <a
                     href={`https://fr.wowhead.com/classic/item=${item.id}`}
-                    data-wowhead={`item=${item.id}&domain=fr`}
+                    data-wowhead={`item=${item.id}&domain=fr.classic`}
                     onClick={(e) => e.stopPropagation()}
                     className="text-white hover:text-blue-300"
                   >
